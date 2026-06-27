@@ -1,0 +1,12 @@
+강의자료/
+tmp/
+
+# Keep local IDE and build outputs out of the root repository as well.
+.idea/
+.gradle/
+build/
+out/
+
+# Local OS/editor noise.
+Thumbs.db
+.DS_Store
