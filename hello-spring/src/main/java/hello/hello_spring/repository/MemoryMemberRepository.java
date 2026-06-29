@@ -1,9 +1,11 @@
 package hello.hello_spring.repository;
 
 import hello.hello_spring.domain.Member;
+import org.springframework.stereotype.Repository;
 
 import java.util.*;
 
+// @Repository // spring container 에서 리포지토리로 등록한다.
 public class MemoryMemberRepository implements MemberRepository{
 
     // 공유 변수일 경우 ConcurrentHashMap을 사용해야한다. 단순화를 위해 HashMap 사용
