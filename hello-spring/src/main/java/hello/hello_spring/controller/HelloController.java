@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-@Controller
+@Controller // 스프링이 제공하는 컨트롤러로서 스프링 빈으로 자동 등록된다.
 public class HelloController {
 
     @GetMapping("hello") // get 메서드이다.
