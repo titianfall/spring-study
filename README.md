@@ -16,6 +16,29 @@
 2. 정리가 끝나면 같은 번호로 `issues/html/NNNN-topic.html`을 만듭니다.
 3. GitHub에 올릴 준비가 되면 `scripts/sync-github-learning.ps1`을 실행합니다.
 4. 스크립트가 label, milestone, issue, branch, commit, PR을 만들고 PR 링크를 출력합니다.
+5. PR이 병합된 뒤에는 아래 **브랜치 정리** 절차를 따릅니다.
+
+## PR 병합 후 브랜치 정리
+
+PR이 main에 병합되면 원격 브랜치와 로컬 브랜치를 모두 삭제합니다.
+
+```powershell
+# 1. main으로 전환하고 최신 상태로 동기화
+git switch main
+git pull origin main
+
+# 2. 병합된 원격 브랜치 삭제
+git push origin --delete <브랜치명>   # 예: learning/20260629-195054
+
+# 3. 로컬 브랜치 삭제
+git branch -d <브랜치명>
+
+# 4. 원격에서 이미 삭제된 추적 브랜치 정리 (옵션)
+git fetch --prune
+```
+
+> GitHub 웹 UI에서 PR 병합 직후 **"Delete branch"** 버튼을 누르면 원격 브랜치는 자동 삭제됩니다.
+> 로컬에서는 `git fetch --prune` 후 `git branch -d <브랜치명>` 으로 마무리합니다.
 
 ## GitHub 자동 발행
 
