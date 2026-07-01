@@ -188,6 +188,123 @@ function Ensure-Issues {
     return $issueNumbers
 }
 
+function Get-ChangedPaths {
+    $status = Invoke-Git @("status", "--porcelain")
+    if ([string]::IsNullOrWhiteSpace($status)) {
+        return @()
+    }
+
+    $paths = New-Object System.Collections.Generic.List[string]
+    foreach ($line in ($status -split "`r?`n")) {
+        if ([string]::IsNullOrWhiteSpace($line)) {
+            continue
+        }
+
+        $path = $line.Substring(3).Trim()
+        if ($path -match " -> ") {
+            $path = ($path -split " -> ")[-1]
+        }
+        $paths.Add(($path -replace "\\", "/"))
+    }
+
+    return @($paths)
+}
+
+function Get-ChapterNumber {
+    param([string]$Path)
+
+    $normalized = $Path -replace "\\", "/"
+    if ($normalized -match "^issues/(\d{4})-[^/]+\.md$") {
+        return $Matches[1]
+    }
+    return ""
+}
+
+function Test-WorkflowPath {
+    param([string]$Path)
+
+    $normalized = $Path -replace "\\", "/"
+    return (
+        $normalized -eq "README.md" -or
+        $normalized -eq "issues/README.md" -or
+        $normalized -like ".github/*" -or
+        $normalized -like "scripts/*"
+    )
+}
+
+function Commit-PathGroup {
+    param(
+        [string[]]$Paths,
+        [string]$Message
+    )
+
+    if ($Paths.Count -eq 0) {
+        return
+    }
+
+    foreach ($path in $Paths) {
+        Invoke-Git @("add", "--", $path) | Out-Null
+    }
+
+    $staged = Invoke-Git @("diff", "--cached", "--name-only")
+    if ([string]::IsNullOrWhiteSpace($staged)) {
+        return
+    }
+
+    Invoke-Git @("commit", "-m", $Message) | Out-Null
+}
+
+function Commit-LearningChanges {
+    $alreadyStaged = Invoke-Git @("diff", "--cached", "--name-only")
+    if (-not [string]::IsNullOrWhiteSpace($alreadyStaged)) {
+        throw "Staged changes already exist. Unstage them before running this script."
+    }
+
+    $paths = Get-ChangedPaths
+    if ($paths.Count -eq 0) {
+        Write-Host "No file changes to publish. Skipping commit and PR."
+        return $false
+    }
+
+    $chapterGroups = @{}
+    $workflowPaths = New-Object System.Collections.Generic.List[string]
+    $unsupportedPaths = New-Object System.Collections.Generic.List[string]
+
+    foreach ($path in $paths) {
+        $chapter = Get-ChapterNumber $path
+        if (-not [string]::IsNullOrWhiteSpace($chapter)) {
+            if (-not $chapterGroups.ContainsKey($chapter)) {
+                $chapterGroups[$chapter] = New-Object System.Collections.Generic.List[string]
+            }
+            $chapterGroups[$chapter].Add($path)
+            continue
+        }
+
+        if (Test-WorkflowPath $path) {
+            $workflowPaths.Add($path)
+            continue
+        }
+
+        $unsupportedPaths.Add($path)
+    }
+
+    if ($unsupportedPaths.Count -gt 0) {
+        $joined = ($unsupportedPaths | Sort-Object) -join "`n"
+        throw "Unsupported changes are present. Commit app code or unrelated files separately before running this script:`n$joined"
+    }
+
+    foreach ($chapter in ($chapterGroups.Keys | Sort-Object)) {
+        $message = "Update chapter $chapter learning notes"
+        Commit-PathGroup -Paths @($chapterGroups[$chapter]) -Message $message
+    }
+
+    if ($workflowPaths.Count -gt 0) {
+        Commit-PathGroup -Paths @($workflowPaths | Sort-Object) -Message "Update learning workflow"
+    }
+
+    return $true
+}
+
 function Publish-PullRequest {
     param(
         [string]$Repo,
@@ -215,8 +332,11 @@ function Publish-PullRequest {
         }
     }
 
-    Invoke-Git @("add", "-A") | Out-Null
-    Invoke-Git @("commit", "-m", $CommitMessage) | Out-Null
+    $committed = Commit-LearningChanges
+    if (-not $committed) {
+        return ""
+    }
+
     Invoke-Git @("push", "-u", "origin", $Head) | Out-Null
 
     if ($SkipPullRequest) {
@@ -234,7 +354,8 @@ function Publish-PullRequest {
 ## Summary
 
 - Sync learning labels, milestones, and issues.
-- Add or update Spring study notes and generated HTML outputs.
+- Add or update Spring study Markdown notes.
+- Keep related chapter changes split into separate commits in one PR.
 
 ## Issues
 
