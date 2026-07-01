@@ -1,5 +1,6 @@
 package hello.hello_spring;
 
+import hello.hello_spring.aop.TimeTraceAop;
 import hello.hello_spring.domain.Member;
 import hello.hello_spring.repository.*;
 import hello.hello_spring.service.MemberService;
@@ -22,6 +23,12 @@ public class SpringConfig {
         this.memberRepository = memberRepository;
     }
 
+    @Bean
+    public MemberService memberServie(){
+        return new MemberService(memberRepository);
+    }
+
+
     // @PersistenceContext 하면 di 없이 할수있지만 사용하지 않는다.
 //    private EntityManager em;
 //
@@ -31,11 +38,11 @@ public class SpringConfig {
 //    }
 
     // 스프링이 뜰때  > @Configuration > memberService() 호출 > 등록
-    @Bean
-    public MemberService memberServie(){
-        return new MemberService(memberRepository);
-    }
 
+//    @Bean
+//    public TimeTraceAop timeTraceAop() {
+//        return new TimeTraceAop();
+//    }
 //    @Bean
 //    public MemberRepository memberRepository() {
         // MemberRepository는 인터페이스이다. 객체 생성이 불가능함
