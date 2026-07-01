@@ -5,6 +5,7 @@ import hello.hello_spring.repository.MemberRepository;
 import hello.hello_spring.repository.MemoryMemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.swing.text.html.Option;
 import java.util.List;
@@ -13,6 +14,8 @@ import java.util.Optional;
 // MemberController 에서 spring container 가 연결해주어야 하는데
 // 해당 클래스는 순수 자바 코드이다. 때문에
 // @Service // spring에 올라올때 spring container에 멤버 서비스로 등록해준다.
+
+@Transactional // jpa를 사용하러면 반드시 transactional 내에서 실행되어야한다.
 public class MemberService {
 
     private final MemberRepository memberRepository;

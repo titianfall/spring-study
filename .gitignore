@@ -1,6 +1,11 @@
 강의자료/
 tmp/
 
+# H2 데이터베이스 프로그램 설치 폴더(외부 프로그램, 31MB) 및 DB 파일.
+h2/
+*.mv.db
+*.trace.db
+
 # Keep local IDE and build outputs out of the root repository as well.
 .idea/
 .gradle/
