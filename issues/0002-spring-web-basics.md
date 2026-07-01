@@ -321,4 +321,4 @@ public void setName(String name) { this.name = name; }
 - [ ] `@ResponseBody`로 문자열 응답 확인
 - [ ] `@ResponseBody`로 객체 반환 시 JSON 변환 확인
 - [ ] MVC vs API 방식 차이 이해
-- [ ] 최종 HTML 정리본 생성
+- [ ] Markdown 학습 기록 확인

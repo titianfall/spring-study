@@ -39,16 +39,16 @@ public class MemberService {
         // null일 경우 Optional 내부에 존재하는 메소드를 활용함
 
         // ctrl t > extract method
-        return validateDuplicateMember(member);
+        validateDuplicateMember(member);
+        memberRepository.save(member);
+        return member.getId();
     }
 
-    private Long validateDuplicateMember(Member member) {
+    private void validateDuplicateMember(Member member) {
         memberRepository.findByName(member.getName())
                 .ifPresent(m -> {
             throw new IllegalStateException("이미 존재하는 회원입니다.");
         });
-        memberRepository.save(member);
-        return member.getId();
     }
 
     /**
@@ -57,7 +57,6 @@ public class MemberService {
      * 역시나 테스트 코드를 작성하기 바란다.
      */
     public List<Member> findMembers(){
-        // 리턴 타입을 확인하는 습관을 가지자
         return memberRepository.findAll();
     }
 

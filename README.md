@@ -6,17 +6,17 @@
 
 - `hello-spring/`: Spring Boot 실습 프로젝트
 - `issues/`: Codex에 물어본 내용과 학습 정리를 이슈 단위로 기록하는 Markdown 원본
-- `issues/html/`: 최종 정리본 HTML 저장 위치
 - `.github/learning-plan.json`: GitHub milestone/issue/label 자동 생성 설정
 - `scripts/sync-github-learning.ps1`: 이슈 동기화, 커밋, 브랜치 push, PR 생성을 한 번에 처리하는 스크립트
 
 ## 학습 기록 흐름
 
 1. Codex에 질문하거나 새로 배운 내용을 `issues/NNNN-topic.md`로 정리합니다.
-2. 정리가 끝나면 같은 번호로 `issues/html/NNNN-topic.html`을 만듭니다.
-3. GitHub에 올릴 준비가 되면 `scripts/sync-github-learning.ps1`을 실행합니다.
-4. 스크립트가 label, milestone, issue, branch, commit, PR을 만들고 PR 링크를 출력합니다.
-5. PR이 병합된 뒤에는 아래 **브랜치 정리** 절차를 따릅니다.
+2. Markdown 파일을 최종 학습 기록으로 사용합니다. 별도 HTML 산출물은 만들지 않습니다.
+3. 관련 챕터가 여러 개면 챕터별로 커밋을 나누고, 하나의 PR로 묶습니다.
+4. GitHub에 올릴 준비가 되면 `scripts/sync-github-learning.ps1`을 실행합니다.
+5. 스크립트가 label, milestone, issue, branch, 챕터별 commit, PR을 만들고 PR 링크를 출력합니다.
+6. PR이 병합된 뒤에는 아래 **브랜치 정리** 절차를 따릅니다.
 
 ## PR 병합 후 브랜치 정리
 
@@ -53,7 +53,9 @@ powershell -ExecutionPolicy Bypass -File .\scripts\sync-github-learning.ps1
 - `.github/learning-plan.json` 기준으로 label 생성
 - milestone 생성
 - `issues/*.md`를 GitHub issue로 생성
-- 변경사항 커밋
+- `issues/NNNN-*.md` 변경사항을 챕터 번호별 커밋으로 분리
+- README, 템플릿, 스크립트 같은 학습 워크플로 변경사항은 별도 커밋으로 분리
+- 앱 코드 변경사항이 섞여 있으면 자동 커밋하지 않고 중단
 - `learning/yyyyMMdd-HHmmss` 브랜치 push
 - PR 생성 후 링크 출력
 
