@@ -1,62 +1,81 @@
-# Spring Study
+# Spring-study
 
-김영한 스프링 입문 강의를 따라가며 만든 실습 코드와 학습 기록을 관리하는 저장소입니다.
+김영한 스프링 강의를 따라가며 만든 실습 코드와 학습 기록 저장소.
 
-## 구성
+- **1단계**: 스프링 입문 - 코드로 배우는 스프링 부트, 웹 MVC, DB 접근 기술 ✅ 완료
+- **2단계**: 스프링 핵심 원리 - 기본편 🚧 진행 예정
 
-- `hello-spring/`: Spring Boot 실습 프로젝트
-- `issues/`: Codex에 물어본 내용과 학습 정리를 이슈 단위로 기록하는 Markdown 원본
-- `.github/learning-plan.json`: GitHub milestone/issue/label 자동 생성 설정
-- `scripts/sync-github-learning.ps1`: 이슈 동기화, 커밋, 브랜치 push, PR 생성을 한 번에 처리하는 스크립트
+## 학습 정리 진행 상황
+
+### 스프링 입문 (완료)
+
+📌 **[스프링 입문 통합 복습 노트](docs/스프링%20입문/REVIEW.md)** — 1~7장 전체 압축 요약
+실습 코드: [`study/hello-spring`](study/hello-spring)
+
+<details>
+<summary><b>챕터별 정리</b> (01~07장 완료)</summary>
+
+| # | 챕터 | 정리 |
+|---|------|------|
+| 01 | 프로젝트 환경 설정 | [01. 프로젝트 환경 설정.md](docs/스프링%20입문/01.%20프로젝트%20환경%20설정.md) |
+| 02 | 스프링 웹 개발 기초 | [02. 스프링 웹 개발 기초.md](docs/스프링%20입문/02.%20스프링%20웹%20개발%20기초.md) |
+| 03 | 회원 관리 예제 - 백엔드 개발 | [03. 회원 관리 예제 - 백엔드 개발.md](docs/스프링%20입문/03.%20회원%20관리%20예제%20-%20백엔드%20개발.md) |
+| 04 | 스프링 빈과 의존관계 | [04. 스프링 빈과 의존관계.md](docs/스프링%20입문/04.%20스프링%20빈과%20의존관계.md) |
+| 05 | 회원 관리 예제 - 웹 MVC 개발 | [05. 회원 관리 예제 - 웹 MVC 개발.md](docs/스프링%20입문/05.%20회원%20관리%20예제%20-%20웹%20MVC%20개발.md) |
+| 06 | 스프링 DB 접근 기술 | [06. 스프링 DB 접근 기술.md](docs/스프링%20입문/06.%20스프링%20DB%20접근%20기술.md) |
+| 07 | AOP | [07. AOP.md](docs/스프링%20입문/07.%20AOP.md) |
+
+</details>
+
+### 스프링 핵심 원리 - 기본편 (진행 예정)
+
+실습 코드: [`study/core`](study/core)
+챕터 인덱스: [docs/스프링 핵심 원리](docs/스프링%20핵심%20원리)
+
+## 개발 환경
+
+각 실습 프로젝트는 자체 Gradle Wrapper와 `settings.gradle`을 가진 **독립 빌드**다. 서로 다른 Spring Boot 버전을 써도 각자의 래퍼로 실행하므로 설정이 섞이지 않는다. (IDE에서는 `study/hello-spring`, `study/core`를 각각 별도 프로젝트로 연다.)
+
+### 스프링 입문 — `study/hello-spring`
+
+| 항목 | 버전 |
+|------|------|
+| Spring Boot | 3.5.16 |
+| Java | 17 |
+| 빌드 | Gradle (Groovy) |
+| DB | H2 2.x |
+| 주요 의존성 | web, thymeleaf, data-jpa, h2 |
+
+```bash
+cd study/hello-spring
+./gradlew bootRun     # Windows: gradlew.bat bootRun
+```
+
+### 스프링 핵심 원리 - 기본편 — `study/core`
+
+| 항목 | 버전 |
+|------|------|
+| Spring Boot | 4.1.0 |
+| Java | 17 |
+| 빌드 | Gradle (Groovy) |
+| 주요 의존성 | spring-boot-starter |
+
+```bash
+cd study/core
+./gradlew build       # Windows: gradlew.bat build
+```
+
+## 저장소 구성
+
+| 경로 | 설명 |
+|------|------|
+| `docs/<강좌명>/` | 강좌별 학습 정리 Markdown (구 `issues/`) |
+| `study/` | 강좌별 독립 실습 프로젝트 |
+| `강의자료/` | 강의 PDF (루트 `.gitignore`로 Git 추적 제외) |
 
 ## 학습 기록 흐름
 
-1. Codex에 질문하거나 새로 배운 내용을 `issues/NNNN-topic.md`로 정리합니다.
-2. Markdown 파일을 최종 학습 기록으로 사용합니다. 별도 HTML 산출물은 만들지 않습니다.
-3. 관련 챕터가 여러 개면 챕터별로 커밋을 나누고, 하나의 PR로 묶습니다.
-4. GitHub에 올릴 준비가 되면 `scripts/sync-github-learning.ps1`을 실행합니다.
-5. 스크립트가 label, milestone, issue, branch, 챕터별 commit, PR을 만들고 PR 링크를 출력합니다.
-6. PR이 병합된 뒤에는 아래 **브랜치 정리** 절차를 따릅니다.
-
-## PR 병합 후 브랜치 정리
-
-PR이 main에 병합되면 원격 브랜치와 로컬 브랜치를 모두 삭제합니다.
-
-```powershell
-# 1. main으로 전환하고 최신 상태로 동기화
-git switch main
-git pull origin main
-
-# 2. 병합된 원격 브랜치 삭제
-git push origin --delete <브랜치명>   # 예: learning/20260629-195054
-
-# 3. 로컬 브랜치 삭제
-git branch -d <브랜치명>
-
-# 4. 원격에서 이미 삭제된 추적 브랜치 정리 (옵션)
-git fetch --prune
-```
-
-> GitHub 웹 UI에서 PR 병합 직후 **"Delete branch"** 버튼을 누르면 원격 브랜치는 자동 삭제됩니다.
-> 로컬에서는 `git fetch --prune` 후 `git branch -d <브랜치명>` 으로 마무리합니다.
-
-## GitHub 자동 발행
-
-GitHub 원격 저장소를 연결하고 `gh` 로그인이 끝난 뒤 실행합니다.
-
-```powershell
-powershell -ExecutionPolicy Bypass -File .\scripts\sync-github-learning.ps1
-```
-
-이 스크립트가 처리하는 일:
-
-- `.github/learning-plan.json` 기준으로 label 생성
-- milestone 생성
-- `issues/*.md`를 GitHub issue로 생성
-- `issues/NNNN-*.md` 변경사항을 챕터 번호별 커밋으로 분리
-- README, 템플릿, 스크립트 같은 학습 워크플로 변경사항은 별도 커밋으로 분리
-- 앱 코드 변경사항이 섞여 있으면 자동 커밋하지 않고 중단
-- `learning/yyyyMMdd-HHmmss` 브랜치 push
-- PR 생성 후 링크 출력
-
-강의자료 PDF는 루트 `.gitignore`에서 제외되어 Git에 올라가지 않습니다.
+1. 강의자료 PDF를 기준으로 `docs/<강좌명>/NN. 챕터 제목.md`에 학습 내용을 **미리 정리**한다.
+2. 학습하며 실습 코드를 챕터 단위로 커밋한다.
+3. 브랜치에서 커밋 내용을 근거로 md를 보충·보완한 뒤 main에 merge한다.
+4. 강좌 전체가 끝나면 통합 복습 노트(`REVIEW.md`)로 압축한다.
