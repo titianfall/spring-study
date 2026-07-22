@@ -16,27 +16,27 @@ import org.springframework.context.annotation.Configuration;
 public class AppConfig {
     // spring container 에 등록 @Beam
 
-    // 사용하는 Repository (Memory, DB(미구현))
-    @Bean
-    public MemberRepository memberRepository() {
-        return new MemoryMemberRepository();
-    }
-
-    // 사용하는 DiscountPolicy (Fix, Rate 중 택1)
-    @Bean
-    public DiscountPolicy discountPolicy() {
-        return new RateDiscountPolicy();
-    }
-
     // Service <- memberRepository 필요
     @Bean
     public MemberService memberService() {
         return new MemberServiceImpl(memberRepository());
     }
 
+    // 사용하는 Repository (Memory, DB(미구현))
+    @Bean
+    public MemberRepository memberRepository() {
+        return new MemoryMemberRepository();
+    }
+
     // OrderService <- Repository, DiscountPolicy 필요
     @Bean
     public OrderService orderService() {
         return new OrderServiceImpl(memberRepository(), discountPolicy());
+    }
+
+    // 사용하는 DiscountPolicy (Fix, Rate 중 택1)
+    @Bean
+    public DiscountPolicy discountPolicy() {
+        return new RateDiscountPolicy();
     }
 }
