@@ -14,7 +14,7 @@ import org.springframework.context.annotation.Configuration;
 // 구성 영역 (사용영역에서 사용하는 인스턴스 생성)
 @Configuration // 설정 정보 담당 파일
 public class AppConfig {
-    // spring container 에 등록 @Beam
+    // spring container 에 등록 @Bean
 
     // Service <- memberRepository 필요
     @Bean
