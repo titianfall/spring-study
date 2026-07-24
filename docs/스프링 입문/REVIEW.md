@@ -7,14 +7,26 @@
 
 ## 전체 그림 — 한 장으로 보는 흐름
 
+```mermaid
+flowchart LR
+    browser["브라우저"]
+    web["Spring MVC<br/>Controller와 View"]
+    service["Service<br/>핵심 비즈니스 로직"]
+    repository["Repository<br/>저장소 역할"]
+    db[("Memory 또는 DB")]
+    container["Spring Container<br/>빈 등록과 DI"]
+    aop["AOP Proxy<br/>공통 관심사"]
+
+    browser --> web
+    web --> aop
+    aop --> service
+    service --> repository --> db
+    container -.->|"객체 생성·연결"| web
+    container -.->|"객체 생성·연결"| service
+    container -.->|"구현체 선택"| repository
 ```
-[1~2장] 웹 기초        브라우저 → 내장 Tomcat → Controller → viewResolver → Thymeleaf → HTML 응답
-[3장]   백엔드 설계     Controller → Service → Repository(인터페이스) → 도메인
-[4장]   스프링 컨테이너  빈 등록(컴포넌트 스캔 / @Bean) + DI(생성자 주입 권장)
-[5장]   웹 MVC 완성    폼(GET) → 등록(POST) → redirect:/ → 목록(th:each)
-[6장]   DB 접근        Memory → JDBC → JdbcTemplate → JPA → 스프링 데이터 JPA (설정 한 줄 교체 = OCP)
-[7장]   AOP           공통 관심사(시간 측정)를 @Aspect + @Around 프록시로 분리
-```
+
+1~2장에서 배운 웹 요청은 3~6장의 서비스·저장소 계층으로 이어진다. 스프링 컨테이너가 이 객체들을 생성하고 연결하며, 7장의 AOP 프록시는 호출 경로 중간에서 시간 측정 같은 공통 관심사를 적용한다.
 
 ---
 
@@ -31,14 +43,19 @@
 
 ### MVC 동작 흐름 (핵심 암기)
 
-```
-브라우저 GET /hello
-  → 내장 Tomcat
-  → @GetMapping("/hello") HelloController.hello(Model)   ← 진입점
-  → return "hello" (뷰 이름)
-  → viewResolver: "hello" → classpath:/templates/hello.html
-  → Thymeleaf가 th:* 를 데이터로 채워 렌더링
-  → 완성된 HTML 응답
+```mermaid
+sequenceDiagram
+    participant B as 브라우저
+    participant T as 내장 Tomcat
+    participant C as HelloController
+    participant R as viewResolver
+    participant V as Thymeleaf
+
+    B->>T: GET /hello
+    T->>C: hello(Model) 호출
+    C-->>R: 뷰 이름 hello + Model
+    R->>V: templates/hello.html 선택
+    V-->>B: 렌더링된 HTML 응답
 ```
 
 - **viewResolver**: 뷰 이름 → `templates/{이름}.html` 경로로 조립해주는 컴포넌트.
